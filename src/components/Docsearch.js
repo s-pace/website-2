@@ -1,77 +1,117 @@
-import React, { useEffect } from 'react';
-import styled from '@emotion/styled';
-import { css } from '@emotion/core';
-import 'docsearch.js/dist/cdn/docsearch.css';
-import { media } from './Framework';
+import React, { Fragment, useState, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
+import Helmet from 'react-helmet';
+import { Link, navigate } from 'gatsby';
+import { DocSearchButton, useDocSearchKeyboardEvents } from '@docsearch/react';
+import '@docsearch/css';
 
-const canUseDOM = !!(
-  typeof window !== 'undefined' &&
-  window.document &&
-  window.document.createElement
-);
+let DocSearchModal = null;
 
-const DocsearchContainer = styled.div`
-  padding-bottom: 10px;
-  display: none;
-  transition: box-shadow 0.4s ease-out;
-  flex-direction: column;
-  align-items: stretch;
-  padding: 10px;
+const Hit = ({ hit, children }) => <Link to={hit.url}>{children}</Link>;
 
-  ${props =>
-    props.scrolled &&
-    css`
-      box-shadow: 0 10px 15px -4px rgba(100, 0, 0, 0.3);
-    `}
+const DocSearch = ({ name, className, scrolled }) => {
+  const docsearchCredentials = {
+    appId: 'BH4D9OD16A',
+    apiKey: 'd5fa05c4e33e776fbf2b8021cbc15b37',
+    indexName: 'popper',
+    algoliaOptions: { facetFilters: ['tags:v2'] },
+  };
+  const searchButtonRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [initialQuery, setInitialQuery] = useState(null);
 
-  ${media.lg} {
-    display: flex;
-  }
-
-  .algolia-autocomplete,
-  input {
-    width: 100%;
-  }
-
-  input {
-    border: 0;
-    border-radius: 20px;
-    padding: 10px 20px;
-    transition: box-shadow 0.2s ease-in-out;
-    &:focus {
-      outline: 0;
-      box-shadow: 0 0 0 5px #a93244;
+  const importDocSearchModalIfNeeded = useCallback(() => {
+    if (DocSearchModal) {
+      return Promise.resolve();
     }
-  }
+    return Promise.all([
+      import('@docsearch/react/modal'),
+      import('@docsearch/react/style/modal'),
+    ]).then(([{ DocSearchModal: Modal }]) => {
+      DocSearchModal = Modal;
+    });
+  }, []);
 
-  .algolia-autocomplete .ds-dropdown-menu:before {
-    left: 10px;
-  }
-`;
+  const onOpen = useCallback(() => {
+    importDocSearchModalIfNeeded().then(() => {
+      setIsOpen(true);
+    });
+  }, [importDocSearchModalIfNeeded, setIsOpen]);
 
-export default ({ name, className, scrolled }) => {
-  useEffect(() => {
-    if (canUseDOM) {
-      import('docsearch.js').then(
-        docsearch =>
-          document.querySelector('.algolia-autocomplete') == null &&
-          docsearch.default({
-            apiKey: 'd5fa05c4e33e776fbf2b8021cbc15b37',
-            indexName: 'popper',
-            inputSelector: `.docsearch-input-${name}`,
-            algoliaOptions: { facetFilters: ['tags:v2'] },
-          })
-      );
-    }
-  }, [name]);
+  const onClose = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
 
+  const onInput = useCallback(
+    event => {
+      importDocSearchModalIfNeeded().then(() => {
+        setIsOpen(true);
+        setInitialQuery(event.key);
+      });
+    },
+    [importDocSearchModalIfNeeded, setIsOpen, setInitialQuery]
+  );
+
+  useDocSearchKeyboardEvents({
+    isOpen,
+    onOpen,
+    onClose,
+    onInput,
+    searchButtonRef,
+  });
+  
   return (
-    <DocsearchContainer className={className} scrolled={scrolled}>
-      <input
-        type="search"
-        placeholder="Search the docs..."
-        className={`docsearch-input-${name}`}
+    <Fragment>
+      <Helmet>
+        {/* This hints the browser that the website will load data from Algolia,
+          and allows it to preconnect to the DocSearch cluster. It makes the first
+          query faster, especially on mobile. */}
+        <link
+          rel="preconnect"
+          href={`https://${docsearchCredentials.appId}-dsn.algolia.net`}
+          crossOrigin
+        />
+      </Helmet>
+
+      <DocSearchButton
+        onTouchStart={importDocSearchModalIfNeeded}
+        onFocus={importDocSearchModalIfNeeded}
+        onMouseOver={importDocSearchModalIfNeeded}
+        onClick={onOpen}
+        ref={searchButtonRef}
       />
-    </DocsearchContainer>
+      {DocSearchModal &&
+        isOpen &&
+        createPortal(
+          <DocSearchModal
+            initialScrollY={window.scrollY}
+            initialQuery={initialQuery}
+            onClose={onClose}
+            navigator={{
+              navigate({ suggestionUrl }) {
+                navigate(suggestionUrl);
+              },
+            }}
+            hitComponent={Hit}
+            transformItems={items => {
+              return items.map(item => {
+                // We transform the absolute URL into a relative URL to
+                // leverage Gatsby's preloading.
+                const a = document.createElement('a');
+                a.href = item.url;
+
+                return {
+                  ...item,
+                  url: `${a.pathname}${a.hash}`,
+                };
+              });
+            }}
+            {...docsearchCredentials}
+          />,
+          document.body
+        )}
+    </Fragment>
   );
 };
+
+export default DocSearch;
