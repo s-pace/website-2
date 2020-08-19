@@ -251,7 +251,7 @@ export default function Navigation({ description, lang, meta, path }) {
             </PopperTextLogoContainer>
             <CloseMenuButton onClick={closeMenu}>Close Menu</CloseMenuButton>
 
-            <Docsearch scrolled={scrolled} name="docs" />
+            <Docsearch />
 
             <MenuContents ref={menuRef} onScroll={handleScroll}>
               {createTree(processRoutes(routes, path)).map((route, index) => (

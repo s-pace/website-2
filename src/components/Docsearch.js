@@ -9,7 +9,7 @@ let DocSearchModal = null;
 
 const Hit = ({ hit, children }) => <Link to={hit.url}>{children}</Link>;
 
-const DocSearch = ({ name, className, scrolled }) => {
+const DocSearch = () => {
   const docsearchCredentials = {
     appId: 'BH4D9OD16A',
     apiKey: 'd5fa05c4e33e776fbf2b8021cbc15b37',
