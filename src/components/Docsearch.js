@@ -74,6 +74,9 @@ const DocSearch = ({ name, className, scrolled }) => {
       </Helmet>
 
       <DocSearchButton
+        style={{
+          margin: '0 10px',
+        }}
         onTouchStart={importDocSearchModalIfNeeded}
         onFocus={importDocSearchModalIfNeeded}
         onMouseOver={importDocSearchModalIfNeeded}
