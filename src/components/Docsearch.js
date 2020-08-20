@@ -4,7 +4,8 @@ import Helmet from 'react-helmet';
 import { Global, css } from '@emotion/core';
 import { Link, navigate } from 'gatsby';
 import { DocSearchButton, useDocSearchKeyboardEvents } from '@docsearch/react';
-import '@docsearch/css';
+import '@docsearch/react/style/button';
+import '@docsearch/react/style/variables';
 
 let DocSearchModal = null;
 
