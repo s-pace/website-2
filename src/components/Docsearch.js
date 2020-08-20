@@ -143,6 +143,17 @@ const DocSearch = () => {
           .DocSearch-Button {
             margin: 10px 10px;
           }
+
+          @media (max-width: 750px) {
+            .DocSearch-Button-KeySeparator,
+            .DocSearch-Button-Key {
+              display: flex;
+            }
+
+            .DocSearch-Button-Placeholder {
+              display: flex;
+            }
+          }
         `}
       />
       <DocSearchButton
