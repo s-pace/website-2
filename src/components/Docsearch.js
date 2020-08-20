@@ -141,7 +141,7 @@ const DocSearch = () => {
           }
 
           .DocSearch-Button {
-            margin: 0 10px;
+            margin: 10px 10px;
           }
         `}
       />
