@@ -10,17 +10,6 @@ let DocSearchModal = null;
 
 const Hit = ({ hit, children }) => <Link to={hit.url}>{children}</Link>;
 
-const docsearchCredentials = {
-  appId: 'BH4D9OD16A',
-  apiKey: 'd5fa05c4e33e776fbf2b8021cbc15b37',
-  indexName: 'popper',
-  searchParameters: {
-    facetFilters: [
-      `tags:${window.location.pathname.includes('v1') ? 'v1' : 'v2'}`,
-    ],
-  },
-};
-
 const colors = {
   brand: '#ff6b81',
   active: '#d2cbe4',
@@ -33,6 +22,12 @@ const colors = {
   header: '#b886fd',
   navButton: '#4edee5',
   starFill: '#ffe69d',
+};
+
+const docsearchCredentials = {
+  appId: 'BH4D9OD16A',
+  apiKey: 'd5fa05c4e33e776fbf2b8021cbc15b37',
+  indexName: 'popper',
 };
 
 const DocSearch = () => {
@@ -190,6 +185,13 @@ const DocSearch = () => {
               });
             }}
             {...docsearchCredentials}
+            searchParameters={{
+              facetFilters: [
+                `tags:${
+                  document.location.pathname.includes('v1') ? 'v1' : 'v2'
+                }`,
+              ],
+            }}
           />,
           document.body
         )}
