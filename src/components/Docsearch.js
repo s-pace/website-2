@@ -9,20 +9,6 @@ let DocSearchModal = null;
 
 const Hit = ({ hit, children }) => <Link to={hit.url}>{children}</Link>;
 
-const colors = {
-  brand: '#ff6b81',
-  active: '#d2cbe4',
-  hitActiveBg: '#c83b50',
-  dark: '#2f263c',
-  darker: '#1c1428',
-  divider: '#44395d',
-  black: '#1c1428',
-  permalink: '#ffb6b3',
-  header: '#b886fd',
-  navButton: '#4edee5',
-  starFill: '#ffe69d',
-};
-
 const docsearchCredentials = {
   appId: 'BH4D9OD16A',
   apiKey: 'd5fa05c4e33e776fbf2b8021cbc15b37',
@@ -88,64 +74,75 @@ const DocSearch = () => {
       </Helmet>
       <Global
         styles={css`
-          .DocSearch {
+          :root {
             a {
               border-bottom-style: none;
             }
 
-            .DocSearch-Hit-icon {
-              color: ${colors.permalink};
-            }
-            .DocSearch-Hit[aria-selected='true'] {
-              a {
-                background: ${colors.hitActiveBg};
-              }
-              .DocSearch-Hit-action-button:hover path,
-              .DocSearch-Hit-action-button:focus path {
-                fill: ${colors.starFill};
-              }
-            }
-            .DocSearch-Hit-source,
-            .DocSearch-Prefill {
-              color: ${colors.header};
-            }
-
-            --docsearch-primary-color: ${colors.brand};
-            --docsearch-highlight-color: ${colors.brand};
-
-            --docsearch-modal-background: ${colors.dark};
-
-            --docsearch-searchbox-shadow: inset 0 0 0 2px
-              var(--docsearch-primary-color);
-
-            --docsearch-hit-color: ${colors.active};
-            --docsearch-hit-active-color: ${colors.active};
-            --docsearch-hit-background: ${colors.darker};
-
-            --docsearch-footer-background: ${colors.dark};
-          }
-
-          .DocSearch-Commands {
-            --docsearch-muted-color: ${colors.navButton};
+            --docsearch-primary-color: #ff6b81;
+            --docsearch-text-color: rgb(245, 246, 247);
+            --docsearch-container-background: rgba(9, 10, 17, 0.8);
+            --docsearch-modal-background: #281e36;
+            --docsearch-modal-shadow: inset 1px 1px 0 0 rgb(44, 46, 64),
+              0 3px 8px 0 rgb(0, 3, 9);
+            --docsearch-searchbox-background: rgb(9, 10, 17);
+            --docsearch-searchbox-focus-background: #000;
+            --docsearch-hit-color: rgb(190, 195, 201);
+            --docsearch-hit-shadow: none;
+            --docsearch-hit-background: rgb(9, 10, 17);
             --docsearch-key-gradient: linear-gradient(
               -26.5deg,
-              ${colors.darker} 0%,
-              ${colors.black} 100%
+              rgb(114 86 111) 0%,
+              rgb(65 46 80) 100%
             );
-          }
+            --docsearch-key-shadow: inset 0 -2px 0 0 rgb(81 31 82),
+              inset 0 0 1px 1px rgb(125 81 111), 0 2px 2px 0 rgba(3, 4, 9, 0.3);
+            --docsearch-footer-background: #2f263c;
+            --docsearch-footer-shadow: inset 0 1px 0 0 rgba(73, 76, 106, 0.5),
+              0 -4px 8px 0 rgba(0, 0, 0, 0.2);
+            --docsearch-logo-color: #fff;
+            --docsearch-muted-color: rgb(127, 132, 151);
+            --docsearch-key-shadow: inset 0 -2px 0 0 rgb(40, 45, 85),
+              inset 0 0 1px 1px rgb(81, 87, 125), 0 2px 2px 0 rgba(3, 4, 9, 0.3);
+            --docsearch-footer-background: #2f263c;
+            --docsearch-footer-shadow: inset 0 1px 0 0 rgba(73, 76, 106, 0.5),
+              0 -4px 8px 0 rgba(0, 0, 0, 0.2);
+            --docsearch-logo-color: rgb(255, 255, 255);
+            --docsearch-muted-color: rgb(127, 132, 151);
 
-          .DocSearch-Button {
-            margin: 10px 10px;
-          }
-
-          @media (max-width: 750px) {
-            .DocSearch-Button-KeySeparator,
-            .DocSearch-Button-Key {
-              display: flex;
+            .DocSearch-Button {
+              margin: 10px 10px;
+              height: 39px;
             }
 
             .DocSearch-Button-Placeholder {
-              display: flex;
+              width: 100%;
+              text-align: left;
+            }
+            .DocSearch-Button {
+              --docsearch-searchbox-background: rgb(235, 237, 240);
+              --docsearch-searchbox-focus-background: #fff;
+              --docsearch-text-color: rgb(28, 30, 33);
+              --docsearch-muted-color: rgb(150, 159, 175);
+              --docsearch-key-gradient: linear-gradient(
+                -225deg,
+                rgb(213, 219, 228) 0%,
+                rgb(248, 248, 248) 100%
+              );
+              --docsearch-searchbox-shadow: 0 0 0 4px rgba(0, 0, 0, 0.3);
+              --docsearch-key-shadow: inset 0 -2px 0 0 rgb(205, 205, 230),
+                inset 0 0 1px 1px #fff, 0 1px 2px 1px rgba(30, 35, 90, 0.4);
+            }
+
+            @media (max-width: 750px) {
+              .DocSearch-Button-KeySeparator,
+              .DocSearch-Button-Key {
+                display: flex;
+              }
+
+              .DocSearch-Button-Placeholder {
+                display: flex;
+              }
             }
           }
         `}
